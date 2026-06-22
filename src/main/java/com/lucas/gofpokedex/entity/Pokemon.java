@@ -22,7 +22,9 @@ public class Pokemon {
     private int height;
     @Column(nullable = false)
     private int weight;
+    @Column(nullable = false)
     private List<String> types;
+    @Column(nullable = false)
     private List<String> abilities;
     @Column(nullable = false)
     private int attack;
@@ -31,5 +33,5 @@ public class Pokemon {
     @Column(nullable = false)
     private int speed;
     @Column(name = "base_experience", nullable = false)
-    private int baseExperience;
+    private int baseXP;
 }
