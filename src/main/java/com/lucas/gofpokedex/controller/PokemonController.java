@@ -21,7 +21,7 @@ public class PokemonController {
 
     private SavePokemon savePokemon;
     private ListPokemons listPokemons;
-    private GetPokemonByName  getPokemonByName;
+    private GetPokemonByName getPokemonByName;
     private GetPokemonById getPokemonById;
 
     @PostMapping
