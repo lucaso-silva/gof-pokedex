@@ -1,6 +1,5 @@
 package com.lucas.gofpokedex.exception;
 
-import ch.qos.logback.core.boolex.EvaluationException;
 import feign.FeignException;
 import org.springframework.http.*;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -14,7 +13,8 @@ import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
@@ -35,14 +35,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(value = FeignException.class)
     protected ResponseEntity<ProblemDetail> handleFeignException(FeignException ex, WebRequest request) {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
-                HttpStatusCode.valueOf(ex.status()), ex.getMessage()
+                HttpStatus.BAD_GATEWAY,
+                "External service is unavailable"
         );
-        problemDetail.setTitle("api error");
+        problemDetail.setTitle("api.external-service-error");
         problemDetail.setInstance(URI.create(request.getDescription(false).replace("uri=", "")));
-        problemDetail.setProperty("code", ex.getMessage());
+        problemDetail.setProperty("code", "external-service-error");
         problemDetail.setProperty("timestamp", Instant.now().toString());
 
-        return ResponseEntity.status(ex.status()).body(problemDetail);
+        return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(problemDetail);
     }
 
     @Override
@@ -55,7 +56,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
                     return  param;
                 })
-                .collect(Collectors.toUnmodifiableList());
+                .collect(toList());
 
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
                 HttpStatus.BAD_REQUEST, "validation failed"
