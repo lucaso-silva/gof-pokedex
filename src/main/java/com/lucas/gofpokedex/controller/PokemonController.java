@@ -15,32 +15,31 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/pokemons")
 @AllArgsConstructor
-public class PokemonController {
+public class PokemonController implements PokemonApi {
 
-    private SavePokemon savePokemon;
-    private ListPokemons listPokemons;
-    private GetPokemonByName getPokemonByName;
-    private GetPokemonById getPokemonById;
+    private final SavePokemon savePokemon;
+    private final ListPokemons listPokemons;
+    private final GetPokemonByName getPokemonByName;
+    private final GetPokemonById getPokemonById;
 
-    @PostMapping
-    public ResponseEntity<SavePokemonOutput> save(@RequestBody PokemonRequest pokemon){
+    @Override
+    public ResponseEntity<SavePokemonOutput> save(PokemonRequest pokemon) {
         return ResponseEntity.ok(savePokemon.save(pokemon.name()));
     }
 
-    @GetMapping
-    public ResponseEntity<List<PokemonListOutput>> listAll(){
+    @Override
+    public ResponseEntity<List<PokemonListOutput>> listAll() {
         return ResponseEntity.ok(listPokemons.listAll());
     }
 
-    @GetMapping(params = "name")
-    public ResponseEntity<PokemonOutput> findByName(@RequestParam String name){
+    @Override
+    public ResponseEntity<PokemonOutput> findByName(String name) {
         return ResponseEntity.ok(getPokemonByName.getByName(name));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<PokemonOutput> findById(@PathVariable Long id){
+    @Override
+    public ResponseEntity<PokemonOutput> findById(Long id) {
         return ResponseEntity.ok(getPokemonById.getById(id));
     }
 }

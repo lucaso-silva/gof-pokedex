@@ -17,7 +17,7 @@ public class GetPokemonByNameImpl implements GetPokemonByName {
     @Override
     public PokemonOutput getByName(String name) {
         var pokemon = pokemonRepository.findByName(name)
-                .orElseThrow(() -> new PokemonNotFoundException(name));
+                .orElseThrow(() -> new PokemonNotFoundException("Pokemon '%s' not found".formatted(name)));
 
         return PokemonOutput.from(pokemon);
     }
